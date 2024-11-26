@@ -1,4 +1,12 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
+    country = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=50, blank=True, null=True)
+    is_mentor = models.BooleanField(default=False)
+
 
 class Services(models.Model):
     services = {
@@ -18,7 +26,10 @@ class Mentors(models.Model):
     family_name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
     phone = models.IntegerField()
-    Job_position = models.CharField(max_length=100)
+    job_position = models.CharField(max_length=100)
     Services = models.ManyToManyField(Services)
+    Photo = models.ImageField(upload_to='image/', blank=True, default='Site/Mamozio.png')
+    banner = models.ImageField(upload_to='image/', blank=True)
+
 
 
