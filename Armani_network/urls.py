@@ -17,6 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from armani import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('main/', views.MentorsListAPIView.as_view()),
+    path('mentor/',views.MentorsDetailAPIView.as_view()),
+    path('register/', views.RegisterAPIView.as_view()),
 ]

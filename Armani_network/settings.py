@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-no!xj7brb1yxxaz05!pudr471vpv3bou4c8uh@^_4+q*u1fgt9
 DEBUG = True
 
 ALLOWED_HOSTS = []
-AUTH_USER_MODEL = 'armani.CustomUser'
 
 
 # Application definition
@@ -82,6 +81,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+AUTH_USER_MODEL = 'armani.CustomUser'
 
 
 # Password validation
