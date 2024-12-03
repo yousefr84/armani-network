@@ -7,7 +7,7 @@ from .serializers import *
 
 class MentorsListAPIView(APIView):
     def get(self, request):
-        mentors = Mentors.objects.all()
+        mentors = Mentor.objects.all()
         mentor_serializer = MentorListSerializer(mentors, many=True)
         return Response(mentor_serializer.data, status=status.HTTP_200_OK)
 
@@ -17,7 +17,7 @@ class MentorsDetailAPIView(APIView):
         id = request.query_params.get('id', None)
         if id is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        mentor = get_object_or_404(Mentors, id=id)
+        mentor = get_object_or_404(Mentor, id=id)
         serializer = MentorsDetailsSerializer(mentor)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -30,6 +30,7 @@ class RegisterAPIView(APIView):
         user_serializer = CustomUserSerializer(data=user_data)
         if user_serializer.is_valid():
             user = user_serializer.save()
+            user.set_password(user_data['password'])
 
             if is_mentor:
                 mentor_data = {

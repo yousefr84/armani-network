@@ -12,7 +12,7 @@ class CustomUser(AbstractUser):
     date_joined = models.DateTimeField(default=timezone.now)
     last_name = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
-    is_mentor = models.BooleanField()
+    is_mentor = models.BooleanField(default=True)
 
 
 class Services(models.Model):
