@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from django.urls import path
+from django.urls import path, include
 from armani import views
 
 urlpatterns = [
@@ -26,4 +26,5 @@ urlpatterns = [
     path('register/', views.RegisterAPIView.as_view()),
     path('login/', TokenObtainPairView.as_view(), name='login'),
     path('login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('select2/', include('django_select2.urls'))
 ]

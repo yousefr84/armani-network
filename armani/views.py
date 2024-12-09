@@ -1,4 +1,7 @@
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -22,7 +25,10 @@ class MentorsDetailAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterAPIView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         user_data = request.data
         is_mentor = user_data.get('is_mentor', False)
@@ -31,7 +37,7 @@ class RegisterAPIView(APIView):
         if user_serializer.is_valid():
             user = user_serializer.save()
             user.set_password(user_data['password'])
-
+            user.save()
             if is_mentor:
                 mentor_data = {
                     "user": user.id,

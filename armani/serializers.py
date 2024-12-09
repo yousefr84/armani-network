@@ -54,3 +54,8 @@ class ClientRegistrationSerializer(serializers.ModelSerializer):
         client = Clients.objects.create(**validated_data)
         client.looking_for.set(looking_for)
         return client
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = '__all__'

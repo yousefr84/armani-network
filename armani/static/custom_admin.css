@@ -1,0 +1,10 @@
+select {
+    background-color: #f8f9fa !important; /* تغییر رنگ پس‌زمینه */
+    color: #000 !important; /* تغییر رنگ متن */
+}
+
+option {
+    background-color: #f8f9fa !important; /* رنگ گزینه‌ها */
+    color: #000 !important; /* رنگ متن گزینه‌ها */
+}
+
