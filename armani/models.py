@@ -22,13 +22,7 @@ class Services(models.Model):
 
 
 class Label(models.Model):
-    label = {
-        "FR": 'کشاورزی',
-        "SD": 'توسعه نرم افزار',
-        "AI": 'هوش مصنوعی',
-    }
-
-    name = models.CharField(max_length=2, choices=label)
+    name = models.CharField()
     id = models.AutoField(primary_key=True)
 
 
@@ -54,7 +48,8 @@ class Project(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     labels = models.ManyToManyField(Label)
-    members = models.ManyToManyField(CustomUser)
+    members = models.ManyToManyField(CustomUser, related_name='projects_members', blank=True)
+    manager = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='project', blank=True, null=True)
     rate = models.IntegerField(default=0)
     image = models.ImageField(upload_to='image/', blank=True, default='Site/Mamozio.png')
     date_of_start = models.DateField(auto_now_add=True)

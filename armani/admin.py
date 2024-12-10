@@ -1,9 +1,21 @@
+from cProfile import label
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .models import *
 from .forms import MentorAdminForm
 
+@admin.register(Clients)
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user',]
+
+@admin.register(Label)
+class LabelAdmin(admin.ModelAdmin):
+    list_display = ['name',]
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ['name','manager']
 
 @admin.register(Mentor)
 class MentorsAdmin(admin.ModelAdmin):

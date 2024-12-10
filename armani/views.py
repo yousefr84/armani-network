@@ -12,7 +12,15 @@ class MentorsListAPIView(APIView):
     def get(self, request):
         mentors = Mentor.objects.all()
         mentor_serializer = MentorListSerializer(mentors, many=True)
-        return Response(mentor_serializer.data, status=status.HTTP_200_OK)
+        mentor_data = [{"type": "mentor", **data} for data in mentor_serializer.data]
+
+        projects = Project.objects.all()
+        project_serializer = ProjectListSerializer(projects, many=True)
+        project_data = [{"type": "project", **data} for data in project_serializer.data]
+
+        combined_data = mentor_data + project_data
+
+        return Response(combined_data, status=status.HTTP_200_OK)
 
 
 class MentorsDetailAPIView(APIView):
@@ -23,6 +31,17 @@ class MentorsDetailAPIView(APIView):
         mentor = get_object_or_404(Mentor, id=id)
         serializer = MentorsDetailsSerializer(mentor)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        id = request.data.get('id', None)
+        if id is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        mentor = get_object_or_404(Mentor, id=id)
+        serializer = MentorsDetailsSerializer(mentor, data=request.data, partial=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @method_decorator(csrf_exempt, name='dispatch')

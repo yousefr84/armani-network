@@ -25,20 +25,20 @@ class ClientSerializer(serializers.ModelSerializer):
 class MentorListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Mentor
-        fields = ("id",'user', "job_position")
+        fields = ("id", 'user', "job_position")
 
 
 class MentorRegistrationSerializer(serializers.ModelSerializer):
-    Services = serializers.PrimaryKeyRelatedField(queryset=Services.objects.all(), many=True)
+    services = serializers.PrimaryKeyRelatedField(queryset=Services.objects.all(), many=True)
 
     class Meta:
         model = Mentor
-        fields = [ 'user','job_position', 'Services', 'banner']
+        fields = ['user', 'job_position', 'services', 'banner']
 
     def create(self, validated_data):
-        services = validated_data.pop('Services')
+        services = validated_data.pop('services')
         mentor = Mentor.objects.create(**validated_data)
-        mentor.Services.set(services)
+        mentor.services.set(services)
         return mentor
 
 
@@ -55,7 +55,12 @@ class ClientRegistrationSerializer(serializers.ModelSerializer):
         client.looking_for.set(looking_for)
         return client
 
-class ProjectSerializer(serializers.ModelSerializer):
+
+class ProjectDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = '__all__'
+class ProjectListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ['name', 'description','image']
