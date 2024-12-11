@@ -60,7 +60,21 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = '__all__'
+
+
 class ProjectListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ['name', 'description','image']
+        fields = ['name', 'description', 'image', 'is_finished']
+
+
+class ArticleDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Articles
+        fields = '__all__'
+
+
+class ArticleListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Articles
+        fields = ['name', 'public_by', 'img', 'is_readed']

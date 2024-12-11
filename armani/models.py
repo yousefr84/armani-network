@@ -39,9 +39,13 @@ class Mentor(models.Model):
 
 
 class Articles(models.Model):
+    name = models.CharField()
     made_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='article_profile')
     made_date = models.DateField(auto_now_add=True)
+    public_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='articles_public')
     body = models.TextField()
+    img = models.ImageField(upload_to='image/', blank=True)
+    is_readed = models.BooleanField(default=False)
 
 
 class Project(models.Model):
@@ -54,3 +58,4 @@ class Project(models.Model):
     image = models.ImageField(upload_to='image/', blank=True, default='Site/Mamozio.png')
     date_of_start = models.DateField(auto_now_add=True)
     date_of_end = models.DateField(blank=True, null=True)
+    is_finished = models.BooleanField(default=False)
