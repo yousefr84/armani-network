@@ -78,3 +78,9 @@ class ArticleListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Articles
         fields = ['name', 'public_by', 'img', 'is_readed']
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Services
+        fields = '__all__'
