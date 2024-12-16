@@ -10,6 +10,7 @@ class CustomUser(AbstractUser):
     Photo = models.ImageField(upload_to='image/', blank=True, default='Site/Mamozio.png')
     last_login = models.DateTimeField(default=timezone.now)
     date_joined = models.DateTimeField(default=timezone.now)
+    identification_code = models.CharField(blank=True, null=True, max_length=10, unique=True)
     last_name = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
     is_mentor = models.BooleanField(default=False)
