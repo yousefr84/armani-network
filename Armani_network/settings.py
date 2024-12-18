@@ -36,7 +36,8 @@ REST_FRAMEWORK = {
 SECRET_KEY = 'django-insecure-no!xj7brb1yxxaz05!pudr471vpv3bou4c8uh@^_4+q*u1fgt9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -94,14 +95,15 @@ WSGI_APPLICATION = 'Armani_network.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'project_db',
         'USER': 'admin',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '3306',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

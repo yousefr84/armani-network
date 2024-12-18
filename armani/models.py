@@ -18,12 +18,12 @@ class CustomUser(AbstractUser):
 
 
 class Services(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=100)
     id = models.AutoField(primary_key=True)
 
 
 class Label(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=100)
     id = models.AutoField(primary_key=True)
 
 
@@ -40,7 +40,7 @@ class Mentor(models.Model):
 
 
 class Articles(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=100)
     made_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='article_profile')
     made_date = models.DateField(auto_now_add=True)
     public_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='articles_public')
