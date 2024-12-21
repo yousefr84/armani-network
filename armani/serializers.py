@@ -14,14 +14,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ClientSerializer(serializers.ModelSerializer):
-    user = CustomUserSerializer()
-
-    class Meta:
-        model = Clients
-        fields = ['id', 'user']
-
-
 class MentorListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Mentor
@@ -29,30 +21,34 @@ class MentorListSerializer(serializers.ModelSerializer):
 
 
 class MentorRegistrationSerializer(serializers.ModelSerializer):
-    services = serializers.PrimaryKeyRelatedField(queryset=Services.objects.all(), many=True)
+    banner = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = Mentor
         fields = ['user', 'job_position', 'services', 'banner']
 
     def create(self, validated_data):
-        services = validated_data.pop('services')
+        services = validated_data.pop('services', None)
         mentor = Mentor.objects.create(**validated_data)
-        mentor.services.set(services)
+        if services:
+            mentor.services.set(services)
         return mentor
 
 
 class ClientRegistrationSerializer(serializers.ModelSerializer):
-    looking_for = serializers.PrimaryKeyRelatedField(queryset=Services.objects.all(), many=True)
+    looking_for = serializers.PrimaryKeyRelatedField(
+        queryset=Services.objects.all(), many=True, required=False
+    )
 
     class Meta:
-        model = Clients
+        model = CustomUser
         fields = ['looking_for']
 
     def create(self, validated_data):
-        looking_for = validated_data.pop('looking_for')
-        client = Clients.objects.create(**validated_data)
-        client.looking_for.set(looking_for)
+        looking_for = validated_data.pop('looking_for', None)
+        client = CustomUser.objects.create(**validated_data)
+        if looking_for:
+            client.looking_for.set(looking_for)
         return client
 
 

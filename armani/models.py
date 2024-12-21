@@ -3,6 +3,11 @@ from django.db import models
 from django.utils import timezone
 
 
+class Services(models.Model):
+    name = models.CharField(max_length=100)
+    id = models.AutoField(primary_key=True)
+
+
 class CustomUser(AbstractUser):
     id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=100, unique=True)
@@ -11,15 +16,11 @@ class CustomUser(AbstractUser):
     last_login = models.DateTimeField(default=timezone.now)
     date_joined = models.DateTimeField(default=timezone.now)
     identification_code = models.CharField(blank=True, null=True, max_length=10, unique=True)
-    last_name = models.CharField(max_length=100)
-    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
+    first_name = models.CharField(max_length=100, blank=True, null=True)
     is_mentor = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-
-
-class Services(models.Model):
-    name = models.CharField(max_length=100)
-    id = models.AutoField(primary_key=True)
+    looking_for = models.ManyToManyField(Services, blank=True)
 
 
 class Label(models.Model):
@@ -27,16 +28,16 @@ class Label(models.Model):
     id = models.AutoField(primary_key=True)
 
 
-class Clients(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='client_profile')
-    looking_for = models.ManyToManyField(Services)
+# class Clients(models.Model):
+#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='client_profile')
+#     looking_for = models.ManyToManyField(Services)
 
 
 class Mentor(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='Mentor_profile')
     job_position = models.CharField(max_length=100)
     services = models.ManyToManyField(Services, blank=True, related_name='mentors')
-    banner = models.ImageField(upload_to='image/', blank=True)
+    banner = models.ImageField(upload_to='image/', blank=True, null=True)
 
 
 class Articles(models.Model):

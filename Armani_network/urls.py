@@ -18,10 +18,14 @@ from django.contrib import admin
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.urls import path, include
 from armani import views
+from armani.views import UserDetailAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.MainListAPIView.as_view()),
+    path('api/mentors/', views.MentorListAPIView.as_view()),
+    path('api/user-detail/', UserDetailAPIView.as_view(), name='user-detail'),
+    path('api/project/', views.ProjectListAPIView.as_view()),
+    path('api/article/', views.ArticleListAPIView.as_view()),
     path('mentor/', views.MentorsDetailAPIView.as_view()),
     path('register/', views.RegisterAPIView.as_view()),
     path('login/', TokenObtainPairView.as_view(), name='login'),
