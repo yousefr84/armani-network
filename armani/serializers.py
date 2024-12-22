@@ -2,19 +2,78 @@ from rest_framework import serializers
 from .models import *
 
 
-class MentorsDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Mentor
-        fields = '__all__'
+# class MentorsDetailsSerializer(serializers.ModelSerializer):
+#   class Meta:
+#      model = Mentor
+#     fields = '__all__'
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
+        fields = ("id",
+                  "is_superuser",
+                  "username",
+                  "is_staff",
+                  "email",
+                  "phone",
+                  "Photo",
+                  "last_login",
+                  "date_joined",
+                  "identification_code",
+                  "last_name",
+                  "first_name",
+                  "is_mentor",
+                  "is_active",
+                  "groups",
+                  "user_permissions",
+                  'looking_for')
+
+
+class MentorsDetailsSerializer(serializers.ModelSerializer):
+    user = CustomUserSerializer()
+
+    class Meta:
+        model = Mentor
         fields = '__all__'
 
 
+# class CustomUserSerializer(serializers.ModelSerializer):
+#     photo_url = serializers.SerializerMethodField()
+#
+#     class Meta:
+#         model = CustomUser
+#         fields = (
+#             "id",
+#             "is_superuser",
+#             "username",
+#             "is_staff",
+#             "email",
+#             "phone",
+#             "Photo",
+#             "photo_url",
+#             "last_login",
+#             "date_joined",
+#             "identification_code",
+#             "last_name",
+#             "first_name",
+#             "is_mentor",
+#             "is_active",
+#             "groups",
+#             "user_permissions",
+#             "looking_for",
+#         )
+#
+#     def get_photo_url(self, obj):
+#         request = self.context.get('request')
+#         if obj.Photo and request:
+#             return request.build_absolute_uri(obj.Photo.url)
+#         return None
+
+
 class MentorListSerializer(serializers.ModelSerializer):
+    user = CustomUserSerializer()
+
     class Meta:
         model = Mentor
         fields = ("id", 'user', "job_position")
@@ -25,7 +84,7 @@ class MentorRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mentor
-        fields = ['user', 'job_position', 'services', 'banner']
+        fields = ['user', 'job_position', 'services', 'banner', 'project']
 
     def create(self, validated_data):
         services = validated_data.pop('services', None)

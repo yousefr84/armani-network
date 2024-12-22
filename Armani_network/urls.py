@@ -19,16 +19,23 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.urls import path, include
 from armani import views
 from armani.views import UserDetailAPIView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/mentors/', views.MentorListAPIView.as_view()),
+    # path('api/mentors/', views.MentorListAPIView.as_view()),
+    # path('api/projects/', views.ProjectListAPIView.as_view()),
+    # path('api/article/', views.ArticleListAPIView.as_view()),
     path('api/user-detail/', UserDetailAPIView.as_view(), name='user-detail'),
-    path('api/project/', views.ProjectListAPIView.as_view()),
-    path('api/article/', views.ArticleListAPIView.as_view()),
-    path('mentor/', views.MentorsDetailAPIView.as_view()),
-    path('register/', views.RegisterAPIView.as_view()),
-    path('login/', TokenObtainPairView.as_view(), name='login'),
-    path('login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('select2/', include('django_select2.urls'))
+    path('api/mentor/', views.MentorsDetailAPIView.as_view()),
+    path('api/register/', views.RegisterAPIView.as_view()),
+    path('api/login/', TokenObtainPairView.as_view(), name='login'),
+    path('api/login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/select2/', include('django_select2.urls')),
+    path('api/project/', views.ProjectDetailAPIView.as_view()),
+    path('api/article/', views.ArticleDetailAPIView.as_view()),
+    path('api/main/', views.MainListAPIView.as_view()),
+
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

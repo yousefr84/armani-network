@@ -6,16 +6,21 @@ from django.contrib.auth.admin import UserAdmin
 from .models import *
 from .forms import MentorAdminForm
 
-@admin.register(Clients)
-class ClientAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user',]
+
+@admin.register(Articles)
+class ArticleAdmin(admin.ModelAdmin):
+    list_display = ['name', ]
+
 
 @admin.register(Label)
 class LabelAdmin(admin.ModelAdmin):
-    list_display = ['name',]
+    list_display = ['name', ]
+
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ['name','manager']
+    list_display = ['name', 'manager']
+
 
 @admin.register(Mentor)
 class MentorsAdmin(admin.ModelAdmin):
@@ -36,13 +41,13 @@ class MentorsAdmin(admin.ModelAdmin):
 
 
 @admin.register(CustomUser)
-class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ['id', 'username', 'email']
+class CustomUserAdmin(UserAdmin):
+    list_display = ['id', 'username', 'email', 'Photo']  # اضافه کردن Photo به لیست نمایش
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('phone', 'is_mentor')}),
+        (None, {'fields': ('phone', 'is_mentor', 'Photo')}),  # اضافه کردن Photo به فیلدهای فرم
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('phone', 'is_mentor')}),
+        (None, {'fields': ('phone', 'is_mentor', 'Photo')}),  # اضافه کردن Photo هنگام ثبت کاربر
     )
 
 

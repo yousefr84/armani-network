@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import JSONField
 from django.utils import timezone
 
 
@@ -11,11 +12,11 @@ class Services(models.Model):
 class CustomUser(AbstractUser):
     id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=100, unique=True)
-    phone = models.CharField(blank=True, null=True, max_length=11, unique=True)
-    Photo = models.ImageField(upload_to='image/', blank=True, default='Site/Mamozio.png')
+    phone = models.CharField(blank=True, null=True, max_length=11)
+    Photo = models.ImageField(upload_to='image/', blank=True)
     last_login = models.DateTimeField(default=timezone.now)
     date_joined = models.DateTimeField(default=timezone.now)
-    identification_code = models.CharField(blank=True, null=True, max_length=10, unique=True)
+    identification_code = models.CharField(blank=True, null=True, max_length=10)
     last_name = models.CharField(max_length=100, blank=True, null=True)
     first_name = models.CharField(max_length=100, blank=True, null=True)
     is_mentor = models.BooleanField(default=False)
@@ -38,6 +39,10 @@ class Mentor(models.Model):
     job_position = models.CharField(max_length=100)
     services = models.ManyToManyField(Services, blank=True, related_name='mentors')
     banner = models.ImageField(upload_to='image/', blank=True, null=True)
+    project = models.ManyToManyField(Label, blank=True, related_name='mentors')
+    city = models.CharField(max_length=100, blank=True, null=True)
+    social_networks = JSONField(default=dict, blank=True, null=True)
+    country = models.CharField(max_length=100, blank=True, null=True)
 
 
 class Articles(models.Model):
@@ -53,7 +58,7 @@ class Articles(models.Model):
 class Project(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    labels = models.ManyToManyField(Label)
+    labels = models.ManyToManyField(Label, blank=True, related_name='projects')
     members = models.ManyToManyField(CustomUser, related_name='projects_members', blank=True)
     manager = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='project', blank=True, null=True)
     rate = models.IntegerField(default=0)

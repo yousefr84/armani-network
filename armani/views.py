@@ -9,46 +9,50 @@ from rest_framework.views import APIView
 from .serializers import *
 
 
-# class MainListAPIView(APIView):
-#     def get(self, request):
-#         mentors = Mentor.objects.all()
-#         mentor_serializer = MentorListSerializer(mentors, many=True)
-#         mentor_data = [{"type": "Mentor", **data} for data in mentor_serializer.data]
-#
-#         projects = Project.objects.all()
-#         project_serializer = ProjectListSerializer(projects, many=True)
-#         project_data = [{"type": "Project", **data} for data in project_serializer.data]
-#
-#         article = Articles.objects.all()
-#         article_serializer = ArticleListSerializer(article, many=True)
-#         article_data = [{"type": "Article", **data} for data in article_serializer.data]
-#
-#         combined_data = mentor_data + project_data + article_data
-#
-#         return Response(combined_data, status=status.HTTP_200_OK)
-
-
-class MentorListAPIView(APIView):
-    permission_classes([IsAuthenticated])
-
+class MainListAPIView(APIView):
     def get(self, request):
         mentors = Mentor.objects.all()
         mentor_serializer = MentorListSerializer(mentors, many=True)
-        return Response(mentor_serializer.data, status=status.HTTP_200_OK)
+        mentor_data = [{"type": "Mentor", **data} for data in mentor_serializer.data]
 
-
-class ProjectListAPIView(APIView):
-    def get(self, request):
         projects = Project.objects.all()
         project_serializer = ProjectListSerializer(projects, many=True)
-        return Response(project_serializer.data, status=status.HTTP_200_OK)
+        project_data = [{"type": "Project", **data} for data in project_serializer.data]
+
+        article = Articles.objects.all()
+        article_serializer = ArticleListSerializer(article, many=True)
+        article_data = [{"type": "Article", **data} for data in article_serializer.data]
+
+        # combined_data = mentor_data + project_data + article_data
+        combined = {
+            "mentors": mentor_data,
+            "projects": project_data,
+            "articles": article_data
+        }
+        return Response(combined, status=status.HTTP_200_OK)
 
 
-class ArticleListAPIView(APIView):
-    def get(self, request):
-        articles = Articles.objects.all()
-        article_serializer = ArticleListSerializer(articles, many=True)
-        return Response(article_serializer.data, status=status.HTTP_200_OK)
+# class MentorListAPIView(APIView):
+#     permission_classes([IsAuthenticated])
+#
+#     def get(self, request):
+#         mentors = Mentor.objects.all()
+#         mentor_serializer = MentorListSerializer(mentors, many=True)
+#         return Response(mentor_serializer.data, status=status.HTTP_200_OK)
+#
+#
+# class ProjectListAPIView(APIView):
+#     def get(self, request):
+#         projects = Project.objects.all()
+#         project_serializer = ProjectListSerializer(projects, many=True)
+#         return Response(project_serializer.data, status=status.HTTP_200_OK)
+#
+#
+# class ArticleListAPIView(APIView):
+#     def get(self, request):
+#         articles = Articles.objects.all()
+#         article_serializer = ArticleListSerializer(articles, many=True)
+#         return Response(article_serializer.data, status=status.HTTP_200_OK)
 
 
 class ServicesListAPIView(APIView):
@@ -61,6 +65,7 @@ class ServicesListAPIView(APIView):
 
 class UserDetailAPIView(APIView):
     permission_classes([IsAuthenticated])
+
     def post(self, request):
         user_id = request.data.get('id', None)
         if not user_id:
@@ -78,7 +83,7 @@ class UserDetailAPIView(APIView):
             mentor_serializer = MentorsDetailsSerializer(mentor)
             return Response({
                 "mentor": mentor_serializer.data,
-                "user": user_serializer.data
+                # "user": user_serializer.data
             }, status=status.HTTP_200_OK)
         except Mentor.DoesNotExist:
             return Response({
@@ -86,14 +91,44 @@ class UserDetailAPIView(APIView):
             }, status=status.HTTP_200_OK)
 
 
+# class UserDetailAPIView(APIView):
+#     permission_classes = [IsAuthenticated]
+#
+#     def post(self, request):
+#         user = request.user
+#
+#         try:
+#             mentor = Mentor.objects.get(user=user)
+#         except Mentor.DoesNotExist:
+#             mentor = None
+#
+#         user_serializer = CustomUserSerializer(user, context={"request": request})
+#         mentor_serializer = MentorsDetailsSerializer(mentor, context={"request": request}) if mentor else None
+#
+#         response_data = {
+#             "user": user_serializer.data,
+#             "mentor": mentor_serializer.data if mentor_serializer else None,
+#         }
+#
+#         return Response(response_data, status=status.HTTP_200_OK)
+
+
 class MentorsDetailAPIView(APIView):
-    def get(self, request):
-        id = request.query_params.get('id', None)
-        if id is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        id = request.data.get('id', None)
+        if not id:
+            return Response({"error": "MentorID is required."}, status=status.HTTP_400_BAD_REQUEST)
         mentor = get_object_or_404(Mentor, id=id)
-        serializer = MentorsDetailsSerializer(mentor)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        mentor_serializer = MentorsDetailsSerializer(mentor)
+        return Response(mentor_serializer.data, status=status.HTTP_200_OK)
+
+    # def get(self, request):
+    #     id = request.query_params.get('id', None)
+    #     if id is None:
+    #         return Response(status=status.HTTP_400_BAD_REQUEST)
+    #     mentor = get_object_or_404(Mentor, id=id)
+    #     serializer = MentorsDetailsSerializer(mentor)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request):
         permission_classes([IsAuthenticated])
@@ -136,6 +171,13 @@ class ProjectDetailAPIView(APIView):
         project = get_object_or_404(Project, id=id)
         serializer = ProjectDetailSerializer(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = ProjectDetailSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(manager=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
         permission_classes([IsAuthenticated])
@@ -183,6 +225,13 @@ class ArticleDetailAPIView(APIView):
         article = get_object_or_404(Articles, id=id)
         serializer = ArticleDetailsSerializer(article)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = ArticleDetailsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(author=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
         permission_classes([IsAuthenticated])
@@ -242,6 +291,7 @@ class RegisterAPIView(APIView):
                     "job_position": user_data.get("job_position"),
                     "services": user_data.get("services", []),
                     "banner": user_data.get("banner"),
+                    "project": user_data.get("projects", []),
                 }
                 mentor_serializer = MentorRegistrationSerializer(data=mentor_data)
                 if mentor_serializer.is_valid():
@@ -257,4 +307,3 @@ class RegisterAPIView(APIView):
             return Response(user_serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
