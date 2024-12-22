@@ -51,7 +51,7 @@ class Articles(models.Model):
     made_date = models.DateField(auto_now_add=True)
     public_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='articles_public')
     body = models.TextField()
-    img = models.ImageField(upload_to='image/', blank=True)
+    photo = models.ImageField(upload_to='image/', blank=True)
     is_readed = models.BooleanField(default=False)
 
 
@@ -62,7 +62,7 @@ class Project(models.Model):
     members = models.ManyToManyField(CustomUser, related_name='projects_members', blank=True)
     manager = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='project', blank=True, null=True)
     rate = models.IntegerField(default=0)
-    image = models.ImageField(upload_to='image/', blank=True, default='Site/Mamozio.png')
+    photo = models.ImageField(upload_to='image/', blank=True, default='Site/Mamozio.png')
     date_of_start = models.DateField(auto_now_add=True)
     date_of_end = models.DateField(blank=True, null=True)
     is_finished = models.BooleanField(default=False)

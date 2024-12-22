@@ -12,15 +12,15 @@ from .serializers import *
 class MainListAPIView(APIView):
     def get(self, request):
         mentors = Mentor.objects.all()
-        mentor_serializer = MentorListSerializer(mentors, many=True)
+        mentor_serializer = MentorListSerializer(mentors, many=True, context={"request": request})
         mentor_data = [{"type": "Mentor", **data} for data in mentor_serializer.data]
 
         projects = Project.objects.all()
-        project_serializer = ProjectListSerializer(projects, many=True)
+        project_serializer = ProjectListSerializer(projects, many=True, context={"request": request})
         project_data = [{"type": "Project", **data} for data in project_serializer.data]
 
         article = Articles.objects.all()
-        article_serializer = ArticleListSerializer(article, many=True)
+        article_serializer = ArticleListSerializer(article, many=True, context={"request": request})
         article_data = [{"type": "Article", **data} for data in article_serializer.data]
 
         # combined_data = mentor_data + project_data + article_data
@@ -64,28 +64,31 @@ class ServicesListAPIView(APIView):
 
 
 class UserDetailAPIView(APIView):
-    permission_classes([IsAuthenticated])
 
     def post(self, request):
         user_id = request.data.get('id', None)
         if not user_id:
             return Response({"error": "User ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
+        # تلاش برای یافتن کاربر
         try:
             user = CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        user_serializer = CustomUserSerializer(user)
+        # سریالایزر کاربر با اضافه کردن context برای ساخت لینک عکس
+        user_serializer = CustomUserSerializer(user, context={"request": request})
 
+        # تلاش برای یافتن منتور مرتبط
         try:
             mentor = Mentor.objects.get(user=user)
-            mentor_serializer = MentorsDetailsSerializer(mentor)
+            mentor_serializer = MentorsDetailsSerializer(mentor, context={"request": request})
             return Response({
                 "mentor": mentor_serializer.data,
                 # "user": user_serializer.data
             }, status=status.HTTP_200_OK)
         except Mentor.DoesNotExist:
+
             return Response({
                 "user": user_serializer.data,
             }, status=status.HTTP_200_OK)
