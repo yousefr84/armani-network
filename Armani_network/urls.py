@@ -28,7 +28,7 @@ urlpatterns = [
     # path('api/projects/', views.ProjectListAPIView.as_view()),
     # path('api/article/', views.ArticleListAPIView.as_view()),
     path('api/user-detail/', UserDetailAPIView.as_view(), name='user-detail'),
-    path('api/mentor/', views.MentorsDetailAPIView.as_view()),
+    # path('api/mentor/', views.MentorsDetailAPIView.as_view()),
     path('api/register/', views.RegisterAPIView.as_view()),
     path('api/login/', TokenObtainPairView.as_view(), name='login'),
     path('api/login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
