@@ -44,10 +44,10 @@ class ProjectAdmin(admin.ModelAdmin):
 class CustomUserAdmin(UserAdmin):
     list_display = ['id', 'username', 'email', 'Photo']  # اضافه کردن Photo به لیست نمایش
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('phone', 'Photo')}),  # اضافه کردن Photo به فیلدهای فرم
+        (None, {'fields': ('phone', 'Photo','job_position','services','city','country')}),  # اضافه کردن Photo به فیلدهای فرم
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('phone', 'Photo')}),
+        (None, {'fields': ('phone', 'Photo','job_position','services','city','country')}),  # اضافه کردن Photo هنگام ثبت کاربر
     )
 
 

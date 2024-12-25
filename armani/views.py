@@ -55,10 +55,12 @@ class MainListAPIView(APIView):
 #         return Response(article_serializer.data, status=status.HTTP_200_OK)
 class CustomUserList(APIView):
     permission_classes = [AllowAny]
+
     def get(self, request):
         users = CustomUser.objects.all()
         users_serializer = CustomUserSerializer(users, many=True, context={"request": request})
         return Response(users_serializer.data, status=status.HTTP_200_OK)
+
 
 class ServicesListAPIView(APIView):
     def get(self, request):
@@ -79,19 +81,40 @@ class UserDetailAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request):
+        user_id = request.data.get('id', None)
+        if not user_id:
+            return Response({"error": "User ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(CustomUser, id=user_id)
+        serializer = CustomUserSerializer(user, data=request.data, partial=True, context={"request": request})
+        print(f"serialized user data : {serializer.is_valid()}")
+        print(f"user data is:   {serializer.data}")
+
+        if serializer.is_valid():
+            serializer.save()
+            print(f"user data is:   {serializer.data}")
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            print(f"serializer error is :   {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request):
         user_id = request.data.get('id', None)  # گرفتن شناسه کاربر
         if not user_id:
             return Response({"error": "User ID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         user = get_object_or_404(CustomUser, id=user_id)  # یافتن کاربر
         serializer = CustomUserSerializer(user, data=request.data, partial=True, context={"request": request})
-
+        print(f"validations of serializer is : {serializer.is_valid()}")
+        print(f"user data is:   {serializer.data}")
         if serializer.is_valid():
-            serializer.save()  # ذخیره اطلاعات جدید
+            serializer.save()
             print(f"user data is:   {serializer.data}")
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
+            print(f"serializer error is :   {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # class UserDetailAPIView(APIView):
 #     permission_classes = [IsAuthenticated]
@@ -279,17 +302,14 @@ class RegisterAPIView(APIView):
 
     def post(self, request):
         user_data = request.data
-        print(f"user_data: {user_data}")  # برای مشاهده داده‌های ورودی در لاگ
 
-        # سریالایزر کاربر
         user_serializer = CustomUserSerializer(data=user_data)
         if user_serializer.is_valid():
             user = user_serializer.save()
-            user.set_password(user_data['password'])  # تنظیم رمز عبور
+            user.set_password(user_data['password'])
             user.save()
 
-            # بازگشت اطلاعات کاربر ثبت‌شده
-            return Response(CustomUserSerializer(user, context={"request": request}).data, status=status.HTTP_201_CREATED)
+            return Response(CustomUserSerializer(user, context={"request": request}).data,
+                            status=status.HTTP_201_CREATED)
 
-        # اگر داده‌ها نامعتبر باشند
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

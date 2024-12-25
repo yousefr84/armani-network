@@ -16,7 +16,7 @@ class CustomUser(AbstractUser):
     id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=100, unique=True)
     phone = models.CharField(blank=True, null=True, max_length=11, unique=True)
-    Photo = models.ImageField(upload_to='image/', blank=True,null=True)
+    Photo = models.ImageField(upload_to='image/', blank=True,null=True,default='default_images/l60Hf.png')
     last_login = models.DateTimeField(default=timezone.now)
     date_joined = models.DateTimeField(default=timezone.now)
     identification_code = models.CharField(blank=True, null=True, max_length=10)
@@ -59,7 +59,7 @@ class Articles(models.Model):
     type = 'article'
     made_date = models.DateField(auto_now_add=True)
     public_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='articles_public')
-    body = models.TextField()
+    description = models.TextField(max_length=500)
     photo = models.ImageField(upload_to='image/', blank=True)
     is_readed = models.BooleanField(default=False)
 

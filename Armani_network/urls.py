@@ -36,6 +36,7 @@ urlpatterns = [
     path('api/project/', views.ProjectDetailAPIView.as_view()),
     path('api/article/', views.ArticleDetailAPIView.as_view()),
     path('api/main/', views.MainListAPIView.as_view()),
+    path('api/services/', views.ServicesListAPIView.as_view()),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
